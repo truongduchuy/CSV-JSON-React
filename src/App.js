@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
-import DownloadCsvButton from "./components/DownloadCsvButton";
-import DownloadJsonButton from "./components/DownloadJsonButton";
-import UploadCsv from "./components/UploadCsv";
-import UploadJson from "./components/UploadJson";
+import DownloadButton from "./components/DownloadButton";
+import Upload from "./components/Upload";
 
 function App() {
   const [data, setData] = useState([]);
@@ -53,12 +51,14 @@ function App() {
         </div>
         <div className="convert-box">
           {isDownloadingCsv ? (
-            <DownloadCsvButton data={data} />
+            <DownloadButton data={data} type="csv" />
           ) : (
-            <UploadCsv
+            <Upload
               fileName={fileName}
               onFilesError={onFilesError}
               onSuccess={handleUploadSuccess}
+              type="csv"
+              text="Drop CSV file here or click to upload"
             />
           )}
 
@@ -77,12 +77,14 @@ function App() {
             </button>
           </div>
           {isDownloadingJson ? (
-            <DownloadJsonButton data={data} />
+            <DownloadButton data={data} type="json" />
           ) : (
-            <UploadJson
+            <Upload
               fileName={fileName}
               onFilesError={onFilesError}
               onSuccess={handleUploadSuccess}
+              type="json"
+              text="Drop JSON file here or click to upload"
             />
           )}
         </div>

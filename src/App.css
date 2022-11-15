@@ -43,8 +43,7 @@ button {
   margin-bottom: 20px;
 }
 
-.csv-box,
-.json-box {
+.side-box {
   flex: 1;
   height: 190px;
   display: flex;
