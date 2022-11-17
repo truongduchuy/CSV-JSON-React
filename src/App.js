@@ -1,43 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 import DownloadButton from "./components/DownloadButton";
-import Upload from "./components/Upload";
+import * as CSV from "./utils/csv";
 
 function App() {
-  const [data, setData] = useState([]);
-  const [fileName, setFileName] = useState("");
-  const [isDownloadingCsv, setDownloadingCsv] = useState(false);
-  const [isDownloadingJson, setDownloadingJson] = useState(false);
-
-  const onFilesError = (error, file) => {
-    console.log("error code " + error.code + ": " + error.message);
-    console.log("file " + file);
-  };
+  const [data, setData] = useState({});
 
   const handleConvert = (toType) => {
     if (toType === "csv") {
-      if (fileName.endsWith(".json")) {
-        setDownloadingCsv(true);
-      }
+      console.log({ jsonData: data.json });
+      setData({ ...data, csv: CSV.stringify(JSON.parse(data.json)) });
     } else {
-      if (fileName.endsWith(".csv")) {
-        setDownloadingJson(true);
-      }
+      setData({ ...data, json: JSON.stringify(CSV.parse(data.csv)) });
     }
   };
 
-  const handleUploadSuccess = ({ data, fileName }) => {
-    setData(data);
-    setFileName(fileName);
-    setDownloadingCsv(false);
-    setDownloadingJson(false);
+  const handleChange = (value, field) => {
+    setData({ ...data, [field]: value });
+    console.log({ ...data, [field]: value });
   };
-
   const handleClear = () => {
-    setFileName("");
-    setDownloadingCsv(false);
-    setDownloadingJson(false);
-    setData([]);
+    setData({ csv: "", json: "" });
   };
 
   return (
@@ -50,43 +33,32 @@ function App() {
           </button>
         </div>
         <div className="convert-box">
-          {isDownloadingCsv ? (
-            <DownloadButton data={data} type="csv" />
-          ) : (
-            <Upload
-              fileName={fileName}
-              onFilesError={onFilesError}
-              onSuccess={handleUploadSuccess}
-              type="csv"
-              text="Drop CSV file here or click to upload"
-            />
-          )}
-
+          <div className="side-box">
+            <textarea
+              value={data.csv}
+              onChange={(event) => handleChange(event.target.value, "csv")}
+              rows="4"
+              cols="50"
+            ></textarea>
+            <DownloadButton data={data.csv} type="csv" />
+          </div>
           <div className="actions-box">
-            <button
-              className={`${fileName.endsWith(".json") && "disabled"}`}
-              onClick={() => handleConvert("json")}
-            >
+            <button onClick={() => handleConvert("json")}>
               CSV &rarr; JSON
             </button>
-            <button
-              className={`${fileName.endsWith(".csv") && "disabled"}`}
-              onClick={() => handleConvert("csv")}
-            >
+            <button onClick={() => handleConvert("csv")}>
               CSV &larr; JSON
             </button>
           </div>
-          {isDownloadingJson ? (
-            <DownloadButton data={data} type="json" />
-          ) : (
-            <Upload
-              fileName={fileName}
-              onFilesError={onFilesError}
-              onSuccess={handleUploadSuccess}
-              type="json"
-              text="Drop JSON file here or click to upload"
-            />
-          )}
+          <div className="side-box">
+            <textarea
+              value={data.json}
+              onChange={(event) => handleChange(event.target.value, "json")}
+              rows="4"
+              cols="50"
+            ></textarea>
+            <DownloadButton data={data.json} type="json" />
+          </div>
         </div>
       </div>
     </div>

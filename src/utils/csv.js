@@ -1,4 +1,5 @@
 export const parse = (dataString) => {
+  console.log('dataString in func: ', dataString)
   const dataStringLines = dataString.split(/\r\n|\n/);
   const headers = dataStringLines[0].split(
     /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/
@@ -7,7 +8,6 @@ export const parse = (dataString) => {
   const list = [];
   for (let i = 1; i < dataStringLines.length; i++) {
     const row = dataStringLines[i].split(/,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/);
-
     if (headers && row.length === headers.length) {
       const obj = {};
       for (let j = 0; j < headers.length; j++) {
@@ -27,7 +27,7 @@ export const parse = (dataString) => {
       }
     }
   }
-
+  
   return list;
 };
 
